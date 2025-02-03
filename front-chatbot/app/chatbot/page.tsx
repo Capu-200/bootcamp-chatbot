@@ -8,7 +8,8 @@ const navigation = [
 
 export default function Chatbot() {
     return (
-        <div> This is the Chatbot page
+        <div> 
+            This is the Chatbot page
         </div>
     )
 }
