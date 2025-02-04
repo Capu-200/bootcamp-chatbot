@@ -25,7 +25,7 @@ export default function Projet() {
         <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
           <div className="flex lg:flex-1">
             <a href="/" className="-m-1.5 p-1.5">
-              <span className="sr-only">Booksy</span>
+              <span className="sr-only">Lexio</span>
               <Image
                 alt="logo de l'entreprise représentant un livre ouvert avec un rayon de lumière en sortant"
                 src={Renard}
@@ -59,7 +59,7 @@ export default function Projet() {
               <span className="sr-only">Booksy</span>
               <Image
                 alt="logo de l'entreprise représentant un livre ouvert avec un rayon de lumière en sortant"
-                src={Logo}
+                src={Renard}
                 className="h-10 w-10"
               />
             </a>
