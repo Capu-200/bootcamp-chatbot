@@ -13,21 +13,36 @@ const navigation = [
     { name: "Chatbot", href: "/chatbot" },
 ];
 
-const categories = [
-    {name: "Polar"},
-    {name: "Romance"},
-    {name: "Fantaisie"},
-    {name: "Jeunesse"},
-    {name: "Horreur"},
-    {name: "Science-Fiction"},
-    {name: "Poésie"},
-];
+// const categories = [
+//     {name: "Polar"},
+//     {name: "Romance"},
+//     {name: "Fantaisie"},
+//     {name: "Jeunesse"},
+//     {name: "Horreur"},
+//     {name: "Science-Fiction"},
+//     {name: "Poésie"},
+// ];
+
+const promptExemple = [
+    {name : "Surprenez-moi", value: '"Choisissez un livre totalement au hasard pour moi !"'},
+    {name : "Je envie de...", value: '"… un livre qui me fasse réfléchir sur le monde d’aujourd’hui."'},
+    {name : "Je cherche un livre...", value: '"… qui me fasse voyager dans un univers fantastique."'},
+    {name : "Voyage à travers les livres...", value: '"Un roman qui se passe au Japon ?"'},
+]
 
 export default function Chatbot() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-    
+
+    const [selectedText, setSelectedText] = useState("");
+
+    const handleSelect = (text: string) => {
+        setSelectedText(text);
+    };
+
     return (
         <div className="bg-white h-full"> 
+        
+        {/* Header responsive */}
             <header className="absolute inset-x-0 top-0 z-50">
                 <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
                 <div className="flex lg:flex-1">
@@ -97,6 +112,7 @@ export default function Chatbot() {
                 </DialogPanel>
                 </Dialog>
             </header>
+
             <div className="relative isolate pt-14 lg:px-8 flex flex-row justify-center pb-20 h-dvh bg-white">
                 <div className="flex flex-col justify-between gap-4">
                     <div className="h-[350px] px-4 w-full md:w-[500px] md:px-0 pt-20">
@@ -113,24 +129,40 @@ export default function Chatbot() {
                             </div>                   
                         </div>
                     </div>
-                    <div className="flex flex-col items-start gap-4 w-full justify-center">
-                        <div className="flex items-center content-center flex-wrap grids-col-2 gap-4">
+                    <div className="flex flex-col items-start gap-4 w-[500px] justify-center ">
+                        <div className="flex items-center content-center flex-wrap grids-col-1 gap-4">
+                            {promptExemple.map((prompt) => (
+                                <button
+                                    key={prompt.name}
+                                    onClick={() => handleSelect(prompt.value)}
+                                    className="flex flex-col justify-center items-start gap-2 rounded-lg bg-stone-50 p-4 w-60 hover:bg-orange-50 focus:bg-orange-50 focus:border-2 focus:border-orange-500">
+                                        <h3 className="font-semibold text-sm text-stone-900">{prompt.name}</h3>
+                                        <p className="italic text-stone-500">{prompt.value}</p>
+                                    </button>
+                                ))
+                            }
 
-                            <div className="flex flex-col justify-center items-start gap-2 rounded-lg bg-stone-50 p-4 w-60">
+                            {/* <button className="flex flex-col justify-center items-start gap-2 rounded-lg bg-stone-50 p-4 w-60 hover:bg-orange-50 focus:bg-orange-50 focus:border-2 focus:border-orange-500">
                                 <h3 className="font-semibold text-sm text-stone-900">Surprenez-moi</h3>
                                 <p className="italic text-stone-500">“Choisissez un livre totalement au hasard pour moi !”</p>
-                            </div>
+                            </button> */}
                             
-                            <div className="flex flex-col justify-center items-start gap-2 rounded-lg bg-stone-50 p-4 w-60">
+                            {/* <button className="flex flex-col justify-center items-start gap-2 rounded-lg bg-stone-50 p-4 w-60 hover:bg-orange-50 focus:bg-orange-50 focus:border-2 focus:border-orange-500">
                                 <h3 className="font-semibold text-sm text-stone-900">Je envie de...</h3>
                                 <p className="italic text-stone-500">”… un livre qui me fasse réfléchir sur le monde d’aujourd’hui.”</p>
-                            </div>
+                            </button>
 
-                            <div className="flex flex-col justify-center items-start gap-2 rounded-lg bg-stone-50 p-4 w-60">
-                                <h3 className="font-semibold text-sm text-stone-900">Je cherche...</h3>
+                            <button className="flex flex-col justify-center items-start gap-2 rounded-lg bg-stone-50 p-4 w-60 hover:bg-orange-50 focus:bg-orange-50 focus:border-2 focus:border-orange-500">
+                                <h3 className="font-semibold text-sm text-stone-900">Je cherche un livre...</h3>
                                 <p className="italic text-stone-500">”… qui me fasse voyager dans un univers fantastique.”</p>
-                            </div>
+                            </button>
+
+                            <button className="flex flex-col justify-start items-start gap-2 rounded-lg bg-stone-50 p-4 w-60 hover:bg-orange-50 focus:bg-orange-50 focus:border-2 focus:border-orange-500">
+                                <h3 className="font-semibold text-sm text-stone-900 ">Voyage à travers les livres...</h3>
+                                <p className="italic text-stone-500 content-start">”Un roman qui se passe au Japon ?”</p>
+                            </button> */}
                         </div>
+                        
 
                         <form className="flex flex-row gap-2 relative items-center self-stretch">
                             <input className="bg-zinc-100 rounded-md px-2 py-1.5 w-full outline-none  text-zinc-800 md:max-w-[500px] max-w-[calc(100dvw-32px)]" placeholder="Envoyer un message..." type="text" />
