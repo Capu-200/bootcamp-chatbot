@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.env
+
+# Environnement virtuel
+bin/
+include/
+lib/
+lib64/
+share/
+pyvenv.cfg
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Local development
+.DS_Store
+.env
+.env.local
+chat_history.json
+
+# Ollama models
+models/
+
+# Données sensibles
+data/*.csv
+!data/example.csv
+
+# Cache
+.cache/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
