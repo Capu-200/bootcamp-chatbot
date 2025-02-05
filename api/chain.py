@@ -10,9 +10,10 @@ import json
 from datetime import datetime
 from pathlib import Path
 import os
+
 # Configuration Supabase
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_URL = "https://tkmjiyxqmdmriylvrypl.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRrbWppeXhxbWRtcml5bHZyeXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgzMzEzOTcsImV4cCI6MjA1MzkwNzM5N30.ucYPDA_tOrk873nUXGHNYgi_BeqkTj9rRXrxq-g0wew"
 
 def setup_qa_chain():
     """Configure la chaîne de question-réponse"""
@@ -32,7 +33,7 @@ def setup_qa_chain():
 
     # Configuration du LLM
     llm = OllamaLLM(
-        model="llama2:13B",
+        model="mistral:7B",
         base_url="http://localhost:11434",
         temperature=0.7,
         top_p=0.9
