@@ -9,7 +9,7 @@ from langchain.chains import ConversationalRetrievalChain
 import json
 from datetime import datetime
 from pathlib import Path
-import os
+
 
 # Configuration Supabase
 SUPABASE_URL = "https://tkmjiyxqmdmriylvrypl.supabase.co"
@@ -113,7 +113,7 @@ def save_chat_history(question, answer):
 def is_english_response(text):
     """Vérifie si la réponse semble être en anglais"""
     english_indicators = ['the', 'is', 'are', 'this', 'that', 'here', 'book', 'hello', 'hi', 'I']
-    first_words = text.lower().split()[:10]
+    first_words = text.lower().split()[:10]  # Vérifie les 10 premiers mots
     return any(word in first_words for word in english_indicators)
 
 def chat():
@@ -137,10 +137,10 @@ def chat():
                 "question": f"{question} [RÉPONDRE EN FRANÇAIS UNIQUEMENT]"
             })
             answer = response['answer']
-
+            
             if "I " in answer or "the " in answer.lower():
                 answer = "Je n'ai pas cette information dans ma base de données."
-
+            
             save_chat_history(question, answer)
             print(f"📚 {answer}")
         except Exception as e:

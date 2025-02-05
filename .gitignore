@@ -35,6 +35,7 @@ build/
 .env
 .env.local
 chat_history.json
+conversations.json
 
 # Ollama models
 models/
