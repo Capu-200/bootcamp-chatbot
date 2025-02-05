@@ -5,15 +5,15 @@ from langchain_community.vectorstores import SupabaseVectorStore
 from langchain_ollama import OllamaEmbeddings
 from supabase import create_client
 import pandas as pd
-import os
+
 # Clés API Supabase
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_URL = "https://tkmjiyxqmdmriylvrypl.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRrbWppeXhxbWRtcml5bHZyeXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgzMzEzOTcsImV4cCI6MjA1MzkwNzM5N30.ucYPDA_tOrk873nUXGHNYgi_BeqkTj9rRXrxq-g0wew"
 
 # Langsmith
 LANGSMITH_TRACING=True
-LANGSMITH_ENDPOINT=os.getenv("LANGSMITH_ENDPOINT")
-LANGSMITH_API_KEY=os.getenv("LANGSMITH_API_KEY")
+LANGSMITH_ENDPOINT="https://api.smith.langchain.com"
+LANGSMITH_API_KEY="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"
 LANGSMITH_PROJECT="Bootcamp IA"
 
 # Connexion à Supabase

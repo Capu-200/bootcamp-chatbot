@@ -9,10 +9,10 @@ from langchain.chains import ConversationalRetrievalChain
 import json
 from datetime import datetime
 from pathlib import Path
-import os
+
 # Configuration Supabase
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_URL = "https://tkmjiyxqmdmriylvrypl.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRrbWppeXhxbWRtcml5bHZyeXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgzMzEzOTcsImV4cCI6MjA1MzkwNzM5N30.ucYPDA_tOrk873nUXGHNYgi_BeqkTj9rRXrxq-g0wew"
 
 def setup_qa_chain():
     """Configure la chaîne de question-réponse"""
@@ -32,7 +32,7 @@ def setup_qa_chain():
 
     # Configuration du LLM
     llm = OllamaLLM(
-        model="llama2:13B",
+        model="mistral:7B",
         base_url="http://localhost:11434",
         temperature=0.7,
         top_p=0.9
@@ -112,7 +112,7 @@ def save_chat_history(question, answer):
 def is_english_response(text):
     """Vérifie si la réponse semble être en anglais"""
     english_indicators = ['the', 'is', 'are', 'this', 'that', 'here', 'book', 'hello', 'hi', 'I']
-    first_words = text.lower().split()[:10]
+    first_words = text.lower().split()[:10]  # Vérifie les 10 premiers mots
     return any(word in first_words for word in english_indicators)
 
 def chat():
@@ -136,10 +136,10 @@ def chat():
                 "question": f"{question} [RÉPONDRE EN FRANÇAIS UNIQUEMENT]"
             })
             answer = response['answer']
-
+            
             if "I " in answer or "the " in answer.lower():
                 answer = "Je n'ai pas cette information dans ma base de données."
-
+            
             save_chat_history(question, answer)
             print(f"📚 {answer}")
         except Exception as e:
