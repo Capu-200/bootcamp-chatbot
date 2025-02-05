@@ -32,7 +32,7 @@ def setup_qa_chain():
 
     # Configuration du LLM
     llm = OllamaLLM(
-        model="llama2:13B",
+        model="mistral:7B",
         base_url="http://localhost:11434",
         temperature=0.7,
         top_p=0.9

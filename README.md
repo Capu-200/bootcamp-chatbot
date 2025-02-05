@@ -36,7 +36,7 @@ Dans le terminal, on devrai voir apparaître le modèle installé d'Ollama insta
 Vous pouvez maintenant télécharger les modèles nécessaires pour l'application.
 ```bash
 ollama pull nomic-embed-text
-ollama pull llama2:13b
+ollama pull mistral:7B
 ```
 ⚠️ Note : Le téléchargement peut prendre plusieurs minutes selon votre connexion internet
 
@@ -69,15 +69,34 @@ L'API sera accessible à l'adresse : http://localhost:8000
 
 Pour tester l'API avec Postman :
 
-1. Créez une nouvelle requête POST vers `http://localhost:8000/ask`
-2. Dans Headers, ajoutez :
-   - Key: `Content-Type`
-   - Value: `application/json`
-3. Dans Body, sélectionnez "raw" et "JSON", puis ajoutez :
+1. Créer une nouvelle conversation :
+Méthode : POST
+URL : http://localhost:8000/conversations
+Pas besoin de body
+Vous recevrez un ID de conversation, gardez-le pour les tests suivants
+
+2.Poser une question dans cette conversation :
+Méthode : POST
+URL : http://localhost:8000/ask
+Headers : Content-Type: application/json
+Body :
 ```json
 {
-    "question": "Votre question ici"
+   "conversation_id": "VOTRE_ID_DE_CONVERSATION",
+   "question": "Quelle est la capitale de la France ?"
 }
 ```
-4. Cliquez sur "Send" pour obtenir la réponse.
+
+3. Voir toutes les conversations :
+Méthode : GET
+URL : http://localhost:8000/conversations
+Vous devriez voir la conversation créée avec son historique
+
+4. Voir une conversation spécifique :
+Méthode : GET
+URL : http://localhost:8000/conversations/VOTRE_ID_DE_CONVERSATION
+
+5. Supprimer une conversation :
+Méthode : DELETE
+URL : http://localhost:8000/conversations/VOTRE_ID_DE_CONVERSATION
 
