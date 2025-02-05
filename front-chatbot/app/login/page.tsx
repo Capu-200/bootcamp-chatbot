@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import Renard from './public/renard.png'
+import Renard from '/public/renard.png'
 
 export default function Example() {
     return (
