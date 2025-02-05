@@ -13,16 +13,6 @@ const navigation = [
     { name: "Chatbot", href: "/chatbot" },
 ];
 
-// const categories = [
-//     {name: "Polar"},
-//     {name: "Romance"},
-//     {name: "Fantaisie"},
-//     {name: "Jeunesse"},
-//     {name: "Horreur"},
-//     {name: "Science-Fiction"},
-//     {name: "Poésie"},
-// ];
-
 const promptExemple = [
     {name : "Surprenez-moi", value: '"Choisissez un livre totalement au hasard pour moi !"'},
     {name : "J'ai envie de...", value: '"… un livre qui me fasse réfléchir sur le monde d’aujourd’hui."'},
@@ -43,13 +33,13 @@ export default function Chatbot() {
         <div className="bg-white h-full"> 
 
         {/* Header responsive */}
-            <header className="absolute inset-x-0 top-0 z-50">
+            {/* <header className="inset-x-0 top-0 z-50">
                 <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
                 <div className="flex lg:flex-1">
                     <a href="/" className="-m-1.5 p-1.5">
                     <span className="sr-only">Lexio</span>
                     <Image
-                        alt="logo de l'entreprise représentant un renard qui lit"
+                        alt="logo de l'entreprise représentant un livre ouvert avec un rayon de lumière en sortant"
                         src={Renard}
                         className="h-20 w-20"
                     />
@@ -111,7 +101,7 @@ export default function Chatbot() {
                     </div>
                 </DialogPanel>
                 </Dialog>
-            </header>
+            </header> */}
 
             <div className="relative isolate pt-14 lg:px-8 flex flex-row justify-center pb-20 h-dvh bg-white">
                 <div className="flex flex-col justify-between gap-4">
@@ -147,20 +137,6 @@ export default function Chatbot() {
                                 <p className="italic text-stone-500">“Choisissez un livre totalement au hasard pour moi !”</p>
                             </button> */}
                             
-                            {/* <button className="flex flex-col justify-center items-start gap-2 rounded-lg bg-stone-50 p-4 w-60 hover:bg-orange-50 focus:bg-orange-50 focus:border-2 focus:border-orange-500">
-                                <h3 className="font-semibold text-sm text-stone-900">Je envie de...</h3>
-                                <p className="italic text-stone-500">”… un livre qui me fasse réfléchir sur le monde d’aujourd’hui.”</p>
-                            </button>
-
-                            <button className="flex flex-col justify-center items-start gap-2 rounded-lg bg-stone-50 p-4 w-60 hover:bg-orange-50 focus:bg-orange-50 focus:border-2 focus:border-orange-500">
-                                <h3 className="font-semibold text-sm text-stone-900">Je cherche un livre...</h3>
-                                <p className="italic text-stone-500">”… qui me fasse voyager dans un univers fantastique.”</p>
-                            </button>
-
-                            <button className="flex flex-col justify-start items-start gap-2 rounded-lg bg-stone-50 p-4 w-60 hover:bg-orange-50 focus:bg-orange-50 focus:border-2 focus:border-orange-500">
-                                <h3 className="font-semibold text-sm text-stone-900 ">Voyage à travers les livres...</h3>
-                                <p className="italic text-stone-500 content-start">”Un roman qui se passe au Japon ?”</p>
-                            </button> */}
                         </div>
                         
 
@@ -171,11 +147,6 @@ export default function Chatbot() {
                                 <SparklesIcon aria-hidden="true" className="size-6"/>
                             </button>
                         </form>
-                        {/* {
-                            categories.map((category) => (
-                                <button key={category.name} className={`text-gray-800 text-xs font-medium py-1 px-2 rounded-full border border-stone-400 focus:border-2 focus:text-orange-500 focus:font-semibold focus:border-orange-500 bg-white hover:bg-stone-100`}> {category.name} </button>
-                            ))
-                        } */}
                     </div>
                 </div>
             </div>
