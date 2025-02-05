@@ -21,12 +21,34 @@ const promptExemple = [
 ]
 
 export default function Chatbot() {
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    // const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     const [selectedText, setSelectedText] = useState("");
 
     const handleSelect = (text: string) => {
         setSelectedText(text);
+    };
+
+    const [message, setMessage] = useState("");
+    const [response, setResponse] = useState("");
+
+    const sendMessage = async () => {
+        if (!message) return;
+
+        try {
+        const res = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ selectedText }),
+        });
+
+        const data = await res.json();
+        setResponse(data.response);
+        console.log(setResponse)
+        } catch (error) {
+        console.error("Erreur API :", error);
+        setResponse("Erreur de connexion à l'API.");
+        }
     };
 
     return (
@@ -47,6 +69,9 @@ export default function Chatbot() {
                                 <p className="italic text-zinc-500"> "Je veux un thriller psychologique court mais intense." </p> 
                             </div>                   
                         </div>
+                    </div>
+                    <div>
+                        <p className="mt-4 font-semibold">Réponse : {response}</p>
                     </div>
                     <div className="flex flex-col items-start gap-4 w-[500px] justify-center ">
                         <div className="flex items-center content-center flex-wrap grids-col-1 gap-4">
@@ -70,8 +95,14 @@ export default function Chatbot() {
                         
 
                         <form className="flex flex-row gap-2 relative items-center self-stretch">
-                            <input className="bg-zinc-100 rounded-md px-2 py-1.5 w-full outline-none  text-zinc-800 md:max-w-[500px] max-w-[calc(100dvw-32px)]" placeholder="Envoyer un message..." type="text" value={selectedText} />
-                            <button className="w-auto rounded-md px-2 py-1.5 text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-offset-2"> 
+                            <input 
+                                className="bg-zinc-100 rounded-md px-2 py-1.5 w-full outline-none  text-zinc-800 md:max-w-[500px] max-w-[calc(100dvw-32px)]" 
+                                placeholder="Envoyer un message..." 
+                                type="text" 
+                                value={message} 
+                                onChange={(e) => setMessage(e.target.value)} 
+                            />
+                            <button className="w-auto rounded-md px-2 py-1.5 text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-offset-2" onClick={sendMessage}> 
                                 {/* <PaperAirplaneIcon aria-hidden="true" className="size-6" /> */}
                                 <SparklesIcon aria-hidden="true" className="size-6"/>
                             </button>

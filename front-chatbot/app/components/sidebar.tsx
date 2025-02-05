@@ -41,7 +41,7 @@ export function ChatSidebar() {
   return (
     <div className="w-80 h-screen bg-white border-r border-stone-300 flex flex-col content-center items-center">
       <div className="flex flex-col items-start gap-5 self-stretch p-4">
-        <div className="flex flex-row items-center gap-5 px-5 pb-4 border-b self-stretch border-stone-300">
+        <div className="flex flex-row items-center gap-2 px-5 pb-4 border-b self-stretch border-stone-300">
             <Image alt="" src={Renard} className="size-14"/>
             <h2 className="text-lg font-semibold text-gray-900">
               Lexio
