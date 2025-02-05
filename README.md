@@ -1,4 +1,4 @@
-# Nom de votre projet
+# IAbot
 
 ## Description
 Assistant libraire basé sur l'IA pour recommander des livres, retrouver des informations sur les livres, etc.
