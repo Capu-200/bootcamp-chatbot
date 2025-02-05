@@ -11,61 +11,54 @@ Assistant libraire basé sur l'IA pour recommander des livres, retrouver des inf
 
 ## Installation
 
-### 1. Installation d'Ollama
-
-#### Pour macOS et Linux :
-
+### 1. Cloner le repository :
 ```bash
-curl -fsSL https://ollama.com/install.sh | sh
+git clone [URL_DU_REPO]
+cd [NOM_DU_PROJET]
 ```
 
-#### Pour Windows :
-- Télécharger depuis [ollama.com/download/windows](https://ollama.com/download/windows)
-- Installer le fichier .exe téléchargé
+### 2. Installation de Ollama
 
-### 2. Téléchargement des modèles
+Merci de télécharger Ollama sur votre système d'exploitation :
 
-Démarrer le serveur Ollama
 ```bash
-ollama serve
+https://ollama.com/download
 ```
-Dans un nouveau terminal, télécharger les modèles
+
+### 3. Téléchargement des modèles
+
+Vérifier que le serveur Ollama est bien installé.
+```bash
+ollama list
+```
+Dans le terminal, on devrai voir apparaître le modèle installé d'Ollama installé.
+
+Vous pouvez maintenant télécharger les modèles nécessaires pour l'application.
 ```bash
 ollama pull nomic-embed-text
 ollama pull llama2:13b
 ```
 ⚠️ Note : Le téléchargement peut prendre plusieurs minutes selon votre connexion internet
 
-### 3. Installation des dépendances Python
+Si une erreur apparaît, veuillez vérifier que le serveur Ollama est bien en cours d'exécution. (Dans un autre terminal, lancer `ollama serve`)
 
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Configuration de l'environnement
-
-1. Cloner le repository :
-```bash
-git clone [URL_DU_REPO]
-cd [NOM_DU_PROJET]
-```
-
-2. Créer et activer l'environnement virtuel :
+### 4. Créer et activer l'environnement virtuel :
 ```bash
 python -m venv venv
-source venv/bin/activate  # Pour Linux/MacOS
+pwd # Vous donne le chemin du dossier où se trouve le fichier venv et qu'il faut copier
+source CHEMIN_DU_DOSSIER/venv/bin/activate  # Pour Linux/MacOS coller le chemin dans le terminal et terminer par `/venv/bin/activate`
 # ou
 venv\Scripts\activate  # Pour Windows
 ```
 
-## Démarrage de l'application
-
-1. S'assurer qu'Ollama est en cours d'exécution :
+### 5. Installation des dépendances Python
 ```bash
-ollama serve
+pip install -r utils/requirements.txt
 ```
 
-2. Dans un nouveau terminal, lancer l'application :
+## Démarrage de l'application
+
+Pour lancer le serveur de l'API :
 ```bash
 uvicorn api.main:app --reload
 ```
@@ -87,17 +80,4 @@ Pour tester l'API avec Postman :
 }
 ```
 4. Cliquez sur "Send" pour obtenir la réponse.
-
-## Structure du projet
-```
-project/
-├── api/
-│   ├── main.py
-│   ├── chain.py
-│   └── ollama_manager.py
-├── utils/
-│   └── requirements.txt
-├── README.md
-└── .env
-```
 
