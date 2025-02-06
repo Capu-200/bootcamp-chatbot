@@ -41,7 +41,6 @@ conversations.json
 models/
 
 # Données sensibles
-data/*.csv
 !data/example.csv
 
 # Cache
