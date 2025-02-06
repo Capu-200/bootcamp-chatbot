@@ -49,7 +49,6 @@ def ask_question(query: Query):
             "answer": answer,
             "timestamp": datetime.datetime.now().isoformat()
         }
-
         conversation["messages"].append(new_message)
 
         # Sauvegarder les modifications

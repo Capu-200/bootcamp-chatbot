@@ -30,52 +30,65 @@ vector_store = SupabaseVectorStore(
 )
 
 def insert_books_batch(csv_file):
-    # Construire le chemin correct vers le fichier CSV
     csv_path = f"data/{csv_file}"
 
-    # Lire le CSV et remplacer les NaN par None
-    df = pd.read_csv(csv_path)
+    try:
+        # Spécifier le séparateur comme point-virgule
+        df = pd.read_csv(csv_path, sep=';', header=0)
+        print(f"Lecture de {len(df)} lignes du CSV")
 
-    # Traiter tous les documents en une seule fois
-    all_texts = []
-    all_metadatas = []
+        # Traiter tous les documents en une seule fois
+        all_texts = []
+        all_metadatas = []
 
-    for index, row in df.iterrows():
-        try:
-            if pd.isna(row['Titre']) or pd.isna(row['Auteur']) or pd.isna(row['Catégorie']):
-                print(f"Ligne {index} ignorée : Titre ou Auteur ou Catégorie manquant")
+        for index, row in df.iterrows():
+            try:
+                # Vérification des champs obligatoires avec les nouvelles colonnes
+                if pd.isna(row['Titre_clean']) or pd.isna(row['Auteur']) or pd.isna(row['Catégorie']):
+                    print(f"Ligne {index} ignorée : données obligatoires manquantes")
+                    continue
+
+                # Construction du contenu pour l'embedding avec Titre_clean
+                content = f"{row['Titre_clean']} {row['Auteur']} {row['Catégorie']}"
+
+                # Construction des métadonnées avec les bonnes colonnes
+                metadata = {
+                    "title": str(row['Titre_clean']).strip(),
+                    "author": str(row['Auteur']).strip(),
+                    "category": str(row['Catégorie']).strip(),
+                    "publisher": str(row['Éditeur']).strip() if pd.notna(row['Éditeur']) else "",
+                    "description": str(row['Résumé']).strip() if pd.notna(row['Résumé']) else "",
+                    "price": str(row['Prix']).strip() if pd.notna(row['Prix']) else "",
+                    "link": str(row['Lien']).strip() if pd.notna(row['Lien']) else "",
+                    "image_url": str(row['Image URL']).strip() if pd.notna(row['Image URL']) else ""
+                }
+
+                all_texts.append(content)
+                all_metadatas.append(metadata)
+                print(f"Préparation : {row['Titre_clean']}")
+
+            except Exception as e:
+                print(f"Erreur lors du traitement de la ligne {index}: {str(e)}")
                 continue
 
-            content = f"{row['Titre']} {row['Auteur']} {row['Catégorie']}"
-            metadata = {
-                "title": str(row['Titre']).strip(),
-                "author": str(row['Auteur']).strip() if pd.notna(row['Auteur']) else "",
-                "publisher": str(row['Éditeur']).strip() if pd.notna(row['Éditeur']) else "",
-                "description": str(row['Description']).strip() if pd.notna(row['Description']) else "",
-                "price": str(row['Prix']).strip() if pd.notna(row['Prix']) else "",
-                "link": str(row['Lien']).strip() if pd.notna(row['Lien']) else "",
-                "category": str(row['Catégorie']).strip() if pd.notna(row['Catégorie']) else ""
-            }
-
-            all_texts.append(content)
-            all_metadatas.append(metadata)
-            print(f"Préparation : {row['Titre']}")
-
+        # Insérer tous les documents en une fois
+        print(f"\nTentative d'insertion de {len(all_texts)} documents...")
+        try:
+            if len(all_texts) > 0:
+                vector_store.add_texts(texts=all_texts, metadatas=all_metadatas)
+                print("Insertion réussie !")
+            else:
+                print("Aucun document à insérer !")
         except Exception as e:
-            print(f"Erreur lors du traitement de l'entrée {index}: {str(e)}")
-            continue
+            print(f"Erreur lors de l'insertion : {e}")
 
-    # Insérer tous les documents en une fois
-    print(f"\nTentative d'insertion de {len(all_texts)} documents...")
-    try:
-        vector_store.add_texts(texts=all_texts, metadatas=all_metadatas)
-        print("Insertion réussie !")
     except Exception as e:
-        print(f"Erreur lors de l'insertion : {e}")
+        print(f"Erreur lors de la lecture du fichier CSV : {e}")
 
-# Garder uniquement
-insert_books_batch("test.csv")
+# Exécution
+insert_books_batch("livres.csv")
 
-# Ajouter cette ligne pour vérifier le résultat
-print(f"\nVérification finale - Nombre de documents dans la base : {len(supabase.table('documents').select('*').execute().data)}")
+# Vérification finale
+result = supabase.table('documents').select('*').execute()
+print(f"\nVérification finale - Nombre de documents dans la base : {len(result.data)}")
 
