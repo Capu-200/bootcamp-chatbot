@@ -1,27 +1,7 @@
-'use client'
-import Link from "next/link";
-import React from "react";
+"use client";
 
-import { useState } from 'react'
-import { Dialog, DialogPanel } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon, PaperAirplaneIcon, SparklesIcon } from '@heroicons/react/24/outline'
-import Image from 'next/image'
-import Renard from '/public/renard.png'
-
-const navigation = [
-    { name: "Produit", href: "/" },
-    { name: "Chatbot", href: "/chatbot" },
-];
-
-// const categories = [
-//     {name: "Polar"},
-//     {name: "Romance"},
-//     {name: "Fantaisie"},
-//     {name: "Jeunesse"},
-//     {name: "Horreur"},
-//     {name: "Science-Fiction"},
-//     {name: "Poésie"},
-// ];
+import { useState } from "react";
+import { SparklesIcon } from '@heroicons/react/24/outline'
 
 const promptExemple = [
     {name : "Surprenez-moi", value: '"Choisissez un livre totalement au hasard pour moi !"'},
@@ -30,91 +10,83 @@ const promptExemple = [
     {name : "Voyage à travers les livres...", value: '"Un roman qui se passe au Japon ?"'},
 ]
 
-export default function Chatbot() {
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+type Message = {
+  role: "user" | "ai";
+  text: string;
+};
+
+const Chat = () => {
 
     const [selectedText, setSelectedText] = useState("");
-
+    
     const handleSelect = (text: string) => {
         setSelectedText(text);
     };
 
-    return (
-        <div className="bg-white h-full"> 
+    const [question, setQuestion] = useState(""); // Stocke la question de l'utilisateur
+    const [messages, setMessages] = useState<Message[]>([]); // Stocke la réponse de l'IA
+    const [currentAiMessage, setCurrentAiMessage] = useState(""); // Stocke la réponse progressive
 
-        {/* Header responsive */}
-            <header className="absolute inset-x-0 top-0 z-50">
-                <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
-                <div className="flex lg:flex-1">
-                    <a href="/" className="-m-1.5 p-1.5">
-                    <span className="sr-only">Lexio</span>
-                    <Image
-                        alt="logo de l'entreprise représentant un renard qui lit"
-                        src={Renard}
-                        className="h-20 w-20"
-                    />
-                    </a>
-                </div>
-                <div className="flex lg:hidden">
-                    <button
-                    type="button"
-                    onClick={() => setMobileMenuOpen(true)}
-                    className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-                    >
-                    <span className="sr-only">Open main menu</span>
-                    <Bars3Icon aria-hidden="true" className="size-6" />
-                    </button>
-                </div>
-                <div className="hidden lg:flex lg:gap-x-12">
-                    {navigation.map((item) => (
-                    <a key={item.name} href={item.href} className="text-sm/6 font-semibold text-gray-900">
-                        {item.name}
-                    </a>
-                    ))}
-                </div>
-                </nav>
-                <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
-                <div className="fixed inset-0 z-50" />
-                <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-                    <div className="flex items-center justify-between">
-                    <a href="/" className="-m-1.5 p-1.5">
-                    <span className="sr-only">Lexio</span>
-                    <Image
-                        alt="logo de l'entreprise représentant un livre ouvert avec un rayon de lumière en sortant"
-                        src={Renard}
-                        className="h-10 w-10"
-                    />
-                    </a>
-                    <button
-                        type="button"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="-m-2.5 rounded-md p-2.5 text-gray-700"
-                    >
-                        <span className="sr-only">Close menu</span>
-                        <XMarkIcon aria-hidden="true" className="size-6" />
-                    </button>
-                    </div>
-                    <div className="mt-6 flow-root">
-                    <div className="-my-6 divide-y divide-gray-500/10">
-                        <div className="space-y-2 py-6">
-                        {navigation.map((item) => (
-                            <a
-                            key={item.name}
-                            href={item.href}
-                            className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                            >
-                            {item.name}
-                            </a>
-                        ))}
-                        </div>
-                    </div>
-                    </div>
-                </DialogPanel>
-                </Dialog>
-            </header>
+    const [loading, setLoading] = useState(false); // Indique si la requête est en cours
 
-            <div className="relative isolate pt-14 lg:px-8 flex flex-row justify-center pb-20 h-dvh bg-white">
-                <div className="flex flex-col justify-between gap-4">
+    const [hasStarted, setHasStarted] = useState(false); // Indique si la conversation a commencé
+
+    const conversation_id ="7e676d07-8688-4ef7-b393-f182c2b452c4"; // ID de conversation statique pour l'exemple
+
+    const sendMessage = async (event: React.FormEvent) => {
+        event.preventDefault(); // Empêche le rechargement de la page
+        if (!question) return;
+
+        setHasStarted(true); // Cache l'introduction après le premier message
+        setMessages((prev) => [...prev, { role: "user", text: question }]); // Ajoute le message utilisateur
+
+        setLoading(true); // Active l'indicateur de chargement
+
+        setQuestion(""); // Vide l'input après l'envoi
+        setCurrentAiMessage(""); // Réinitialise la réponse en cours
+
+    try {
+        const res = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ conversation_id, question }),
+        });
+
+        const data = await res.json();
+        // setMessages((prev) => [...prev, { role: "ai", text: data.answer || "Aucune réponse reçue." }]); // Ajoute la réponse de l'IA
+        displayAiResponse(data.answer || "Aucune réponse reçue.");
+
+    } catch (error) {
+        console.error("Erreur API :", error);
+        displayAiResponse("Erreur de connexion à l'API.");
+
+    } finally {
+        setLoading(false);
+    }
+  };
+
+  // Fonction pour afficher la réponse progressivement
+  const displayAiResponse = (fullText: string) => {
+    let i = 0;
+    setCurrentAiMessage(""); // Réinitialise avant de commencer
+
+    const interval = setInterval(() => {
+      if (i < fullText.length) {
+        setCurrentAiMessage((prev) => prev + fullText[i]); // Ajoute une lettre
+        i++;
+      } else {
+        clearInterval(interval);
+        setMessages((prev) => [...prev, { role: "ai", text: fullText }]); // Ajoute la réponse finale au chat
+        setCurrentAiMessage(""); // Réinitialise le message temporaire
+      }
+    }, 30); // Vitesse d'affichage (30ms par lettre)
+  };
+
+  return (
+    <div className="bg-white h-full">
+        <div className="relative isolate pt-14 lg:px-8 flex flex-row justify-center pb-20 h-dvh bg-white">
+            <div className="flex flex-col justify-between gap-4">
+                {!hasStarted && ( // Cache l'intro après le premier message
                     <div className="h-[350px] px-4 w-full md:w-[500px] md:px-0 pt-20">
                         <div className="border rounded-lg p-6 flex flex-col gap-4 text-zinc-800 text-sm border-zinc-200">
                             <p className="font-semibold"> Bienvenue sur Lexio, l'IA qui comprend tes goûts littéraires.</p>
@@ -129,56 +101,64 @@ export default function Chatbot() {
                             </div>                   
                         </div>
                     </div>
-                    <div className="flex flex-col items-start gap-4 w-[500px] justify-center ">
-                        <div className="flex items-center content-center flex-wrap grids-col-1 gap-4">
-                            {promptExemple.map((prompt) => (
-                                <button
-                                    key={prompt.name}
-                                    onClick={() => handleSelect(prompt.value)}
-                                    className="flex flex-col justify-center items-start gap-2 rounded-lg bg-stone-50 p-4 w-60 hover:bg-orange-50 focus:bg-orange-50 focus:border-2 focus:border-orange-500">
-                                        <h3 className="font-semibold text-sm text-stone-900">{prompt.name}</h3>
-                                        <p className="italic text-stone-500">{prompt.value}</p>
-                                </button>
-                                ))
-                            }
+                    
+                )}
 
-                            {/* <button className="flex flex-col justify-center items-start gap-2 rounded-lg bg-stone-50 p-4 w-60 hover:bg-orange-50 focus:bg-orange-50 focus:border-2 focus:border-orange-500">
-                                <h3 className="font-semibold text-sm text-stone-900">Surprenez-moi</h3>
-                                <p className="italic text-stone-500">“Choisissez un livre totalement au hasard pour moi !”</p>
-                            </button> */}
-                            
-                            {/* <button className="flex flex-col justify-center items-start gap-2 rounded-lg bg-stone-50 p-4 w-60 hover:bg-orange-50 focus:bg-orange-50 focus:border-2 focus:border-orange-500">
-                                <h3 className="font-semibold text-sm text-stone-900">Je envie de...</h3>
-                                <p className="italic text-stone-500">”… un livre qui me fasse réfléchir sur le monde d’aujourd’hui.”</p>
-                            </button>
+                {/* {promptExemple.map((prompt) => (
+                    <button
+                        key={prompt.name}
+                        onClick={() => handleSelect(prompt.value)}
+                        className="flex flex-col justify-center items-start gap-2 rounded-lg bg-stone-50 p-4 w-60 hover:bg-orange-50 focus:bg-orange-50 focus:border-2 focus:border-orange-500">
+                            <h3 className="font-semibold text-sm text-stone-900">{prompt.name}</h3>
+                            <p className="italic text-stone-500">{prompt.value}</p>
+                    </button>
+                    ))
+                } */}
+                
 
-                            <button className="flex flex-col justify-center items-start gap-2 rounded-lg bg-stone-50 p-4 w-60 hover:bg-orange-50 focus:bg-orange-50 focus:border-2 focus:border-orange-500">
-                                <h3 className="font-semibold text-sm text-stone-900">Je cherche un livre...</h3>
-                                <p className="italic text-stone-500">”… qui me fasse voyager dans un univers fantastique.”</p>
-                            </button>
-
-                            <button className="flex flex-col justify-start items-start gap-2 rounded-lg bg-stone-50 p-4 w-60 hover:bg-orange-50 focus:bg-orange-50 focus:border-2 focus:border-orange-500">
-                                <h3 className="font-semibold text-sm text-stone-900 ">Voyage à travers les livres...</h3>
-                                <p className="italic text-stone-500 content-start">”Un roman qui se passe au Japon ?”</p>
-                            </button> */}
-                        </div>
-                        
-
-                        <form className="flex flex-row gap-2 relative items-center self-stretch">
-                            <input className="bg-zinc-100 rounded-md px-2 py-1.5 w-full outline-none  text-zinc-800 md:max-w-[500px] max-w-[calc(100dvw-32px)]" placeholder="Envoyer un message..." type="text" value={selectedText} />
-                            <button className="w-auto rounded-md px-2 py-1.5 text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:bg-gradient-to-r focus:outline-none focus:ring-2 focus:ring-offset-2"> 
-                                {/* <PaperAirplaneIcon aria-hidden="true" className="size-6" /> */}
-                                <SparklesIcon aria-hidden="true" className="size-6"/>
-                            </button>
-                        </form>
-                        {/* {
-                            categories.map((category) => (
-                                <button key={category.name} className={`text-gray-800 text-xs font-medium py-1 px-2 rounded-full border border-stone-400 focus:border-2 focus:text-orange-500 focus:font-semibold focus:border-orange-500 bg-white hover:bg-stone-100`}> {category.name} </button>
-                            ))
-                        } */}
+                {/* Espace de chat */}
+                <div className="w-[500px] space-y-4 gap-5">
+                    {messages.map((msg, index) => (
+                    <div 
+                        key={index} 
+                        className={`p-2 rounded-lg max-w-xs ${
+                        msg.role === "user" ? "bg-blue-500 text-white self-end ml-auto" : "bg-gray-200 text-black"
+                        }`}
+                    >
+                        {msg.text}
                     </div>
+                    ))}
+                    {/* Affichage progressif de la réponse IA */}
+                    {currentAiMessage && (
+                    <div className="p-2 rounded-lg max-w-xs bg-gray-200 text-black">
+                        {currentAiMessage}
+                    </div>
+                    )}
                 </div>
+
+                {/* Formulaire de saisie */}
+                <form onSubmit={sendMessage} className="mt-4 flex space-x-2">
+                    <input
+                        type="text"
+                        value={question}
+                        onChange={(e) => setQuestion(e.target.value)}
+                        placeholder="Pose une question..."
+                        className="border p-2 rounded w-full focus:stroke-orange-500 text-zinc-800"
+                    />
+                    <button 
+                        type="submit" 
+                        className="p-2 bg-orange-500 text-white rounded"
+                        disabled={loading}
+                    >
+                    {loading ? "..." : <SparklesIcon aria-hidden="true" className="size-6"/>}
+                    </button>
+                </form>
             </div>
+            
+
         </div>
-    )
-}
+    </div>
+  );
+};
+
+export default Chat;

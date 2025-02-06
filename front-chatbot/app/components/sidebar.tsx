@@ -48,7 +48,7 @@ export function ChatSidebar() {
             </h2>
         </div>
         <button
-          className="w-full flex items-center px-4 py-3 gap-2 rounded font-semibold text-white bg-orange-500 hover:bg-orange-600"
+          className="w-full flex items-center px-4 py-3 gap-2 rounded font-semibold text- text-white bg-orange-500 hover:bg-orange-600"
           onClick={() => console.log("Nouvelle conversation")}
         >
             <PlusIcon aria-hidden="true" className="size-6 stroke-white"/>
