@@ -128,27 +128,26 @@ const Chat = () => {
 
                 )}
 
-                
-                
-
                 {/* Espace de chat */}
                 <div className="w-[500px] space-y-4 gap-5 overflow-y-auto">
                     {messages.map((msg, index) => (
-                    <div 
-                        key={index} 
-                        className={`p-2 rounded-lg max-w-xs ${
-                        msg.role === "user" ? "bg-orange-100 text-stone-900 self-end ml-auto" : "bg-gray-200 text-black"
-                        }`}
-                    >
-                        {msg.text}
-                    </div>
+                        <div 
+                            key={index} 
+                            className={`p-2 rounded-lg max-w-xs ${
+                            msg.role === "user" ? "bg-orange-100 text-stone-900 self-end ml-auto" : "bg-gray-100 text-black"
+                            }`}
+                        >
+                            {msg.text}
+                        </div>
                     ))}
+
                     {/* Affichage progressif de la réponse IA */}
                     {currentAiMessage && (
                     <div className="p-2 rounded-lg max-w-xs bg-gray-200 text-black">
                         {currentAiMessage}
                     </div>
                     )}
+
                     {/* Référence pour scroller en bas */}
                     <div ref={messagesEndRef} />
                 </div>
@@ -171,7 +170,6 @@ const Chat = () => {
                     </button>
                 </form>
             </div>
-            
 
         </div>
     </div>

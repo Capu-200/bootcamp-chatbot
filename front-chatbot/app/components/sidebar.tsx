@@ -42,10 +42,12 @@ export function ChatSidebar() {
     <div className="w-80 h-screen bg-white border-r border-stone-300 flex flex-col content-center items-center">
       <div className="flex flex-col items-start gap-5 self-stretch p-4">
         <div className="flex flex-row items-center gap-2 px-5 pb-4 border-b self-stretch border-stone-300">
+          <a href="/">
             <Image alt="" src={Renard} className="size-14"/>
             <h2 className="text-lg font-semibold text-gray-900">
               Lexio
             </h2>
+          </a>
         </div>
         <button
           className="w-full flex items-center px-4 py-3 gap-2 rounded font-semibold text- text-white bg-orange-500 hover:bg-orange-600"
