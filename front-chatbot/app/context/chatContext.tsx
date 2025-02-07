@@ -30,10 +30,28 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
     const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
 
   // 🔹 Charger toutes les conversations
+    // const loadConversations = async () => {
+    //     const res = await fetch("/api/chat");
+    //     const data = await res.json();
+    //     setConversations(data);
+    // };
     const loadConversations = async () => {
+      try {
         const res = await fetch("/api/chat");
         const data = await res.json();
+    
+        // Vérification : Toujours un tableau
+        if (!Array.isArray(data)) {
+          console.error("Erreur: L'API n'a pas retourné un tableau");
+          setConversations([]); 
+          return;
+        }
+    
         setConversations(data);
+      } catch (error) {
+        console.error("Impossible de charger les conversations :", error);
+        setConversations([]); 
+      }
     };
 
   // 🔹 Charger une conversation spécifique

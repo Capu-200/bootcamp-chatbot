@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { SparklesIcon } from '@heroicons/react/24/outline'
+
+import { useContext, useState, useEffect, useRef } from "react";
+import { ChatContext } from "../context/chatContext";
 
 const promptExemple = [
     {name : "Surprenez-moi", value: '"Choisissez un livre totalement au hasard pour moi !"'},
@@ -17,11 +19,16 @@ type Message = {
 
 const Chat = () => {
 
-    const [selectedText, setSelectedText] = useState("");
+    const chatContext = useContext(ChatContext);
+    if (!chatContext) return null;
+
+    // const [selectedText, setSelectedText] = useState("");
     
-    const handleSelect = (text: string) => {
-        setSelectedText(text);
-    };
+    // const handleSelect = (text: string) => {
+    //     setSelectedText(text);
+    // };
+
+    const { conversations, activeConversationId, sendMessage } = chatContext;
 
     const [question, setQuestion] = useState(""); // Stocke la question de l'utilisateur
     const [messages, setMessages] = useState<Message[]>([]); // Stocke la réponse de l'IA
@@ -31,9 +38,16 @@ const Chat = () => {
 
     const [hasStarted, setHasStarted] = useState(false); // Indique si la conversation a commencé
 
-    const conversation_id ="7e676d07-8688-4ef7-b393-f182c2b452c4"; // ID de conversation statique pour l'exemple
+    // const conversation_id ="7e676d07-8688-4ef7-b393-f182c2b452c4"; // ID de conversation statique pour l'exemple
 
-    const sendMessage = async (event: React.FormEvent) => {
+    // Récupérer la conversation active
+    const activeConversation = conversations.find((conv) => conv.id === activeConversationId) || {
+        id: "",
+        name: "",
+        messages: [],
+    };
+
+    const handleSendMessage = async (event: React.FormEvent) => {
         event.preventDefault(); // Empêche le rechargement de la page
         if (!question) return;
 
@@ -49,7 +63,7 @@ const Chat = () => {
         const res = await fetch("/api/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ conversation_id, question }),
+            body: JSON.stringify({ activeConversationId, question }),
         });
 
         const data = await res.json();
@@ -84,7 +98,7 @@ const Chat = () => {
 
   return (
     <div className="bg-white h-full">
-        <div className="relative isolate pt-14 lg:px-8 flex flex-row justify-center pb-20 h-dvh bg-white">
+        <div className="relative isolate pt-14 lg:px-8 flex flex-row justify-center pb-20 h-full bg-white">
             <div className="flex flex-col justify-between gap-4">
                 {!hasStarted && ( // Cache l'intro après le premier message
                     <div className="h-[350px] px-4 w-full md:w-[500px] md:px-0 pt-20">
@@ -117,27 +131,39 @@ const Chat = () => {
                 
 
                 {/* Espace de chat */}
-                <div className="w-[500px] space-y-4 gap-5">
-                    {messages.map((msg, index) => (
+                <div className="max-w-[500px] space-y-4 gap-5 overflow-y-auto">
+                    {/* {messages.map((msg, index) => (
                     <div 
                         key={index} 
                         className={`p-2 rounded-lg max-w-xs ${
-                        msg.role === "user" ? "bg-blue-500 text-white self-end ml-auto" : "bg-gray-200 text-black"
+                        msg.role === "user" ? "bg-orange-100 text-white self-end ml-auto" : "bg-gray-100 text-black"
                         }`}
                     >
                         {msg.text}
                     </div>
-                    ))}
+                    ))} */}
                     {/* Affichage progressif de la réponse IA */}
-                    {currentAiMessage && (
+                    {/* {currentAiMessage && (
                     <div className="p-2 rounded-lg max-w-xs bg-gray-200 text-black">
                         {currentAiMessage}
                     </div>
-                    )}
+                    )} */}
+
+                    {activeConversation.messages.map((msg, index) => (
+                        <div
+                        key={index}
+                        className={`p-2 rounded-lg max-w-xs ${
+                            msg.role === "user" ? "bg-blue-500 text-white self-end ml-auto" : "bg-gray-200 text-black"
+                        }`}
+                        >
+                        {msg.text}
+                        </div>
+                    ))}
+                    {currentAiMessage && <div className="p-2 rounded-lg max-w-xs bg-gray-200 text-black">{currentAiMessage}</div>}
                 </div>
 
                 {/* Formulaire de saisie */}
-                <form onSubmit={sendMessage} className="mt-4 flex space-x-2">
+                <form onSubmit={handleSendMessage} className="mt-4 flex space-x-2">
                     <input
                         type="text"
                         value={question}
